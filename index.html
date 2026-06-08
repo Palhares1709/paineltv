@@ -46,7 +46,9 @@
 
   <div id="tela-autenticacao">
     <div class="login-box">
-      <img src="https://i.postimg.cc/85zXp9mX/logo-cmr.png" style="width: 60%; margin-bottom: 15px;">
+      <div style="background: var(--verde); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+        <span style="color: var(--amarelo); font-size: 1.8rem; font-weight: bold; letter-spacing: 2px;">CMR BRASIL</span>
+      </div>
       <h2>Acesso Restrito</h2>
       <p style="font-size:0.9rem; color:#666;">Insira seu e-mail institucional para receber o código de acesso.</p>
       
@@ -71,7 +73,9 @@
         <div id="legenda-sobreposta"></div>
       </div>
       <div class="sidebar">
-        <img src="https://i.postimg.cc/85zXp9mX/logo-cmr.png" class="logo">
+        <div style="background: var(--branco); padding: 10px; border-radius: 8px; margin-bottom: 30px; width: 85%; text-align: center; border: 2px solid var(--amarelo);">
+          <span style="color: var(--verde); font-size: 2rem; font-weight: bold; letter-spacing: 1px;">CMR</span>
+        </div>
         <div id="relogio">00:00:00</div>
         <div id="data">...</div>
         <div class="frase-box">
@@ -84,8 +88,8 @@
   </div>
 
   <script>
-    // ⚠️ SUBSTITUA COM A SUA URL DO GOOGLE APPS SCRIPT ATUALIZADA
-    const URL_API = "https://script.google.com/macros/s/AKfycbwpyazuYeiNB9rJo8Mj8Z-p-XonMgRPh3Nhi-I7b6RTYY-D4dw6X7ZPgUYtqdw9AWeB5Q/exec";
+    // ⚠️ COLOQUE AQUI A SUA URL DO GOOGLE APPS SCRIPT (TERMINADA EM /exec)
+    const URL_API = "COLE_AQUI_A_SUA_URL_DO_APP_DA_WEB";
 
     let midias = [], frases = [], idxM = 0, idxF = 0;
     let timerMidia = null, timerFrase = null;
@@ -99,7 +103,6 @@
     }
     setInterval(atualizarRelogio, 1000);
 
-    // Verifica se o navegador já fez login antes para pular a tela de bloqueio
     function verificarLoginExistente() {
       const token = localStorage.getItem("token_cmr");
       if (token === "TOKEN_AUTENTICADO_CMR") {
@@ -110,9 +113,9 @@
     }
 
     function pedirCodigo() {
-      const email = document.getElementById("fcpalharess@gmail.com").value.trim();
+      const email = document.getElementById("email-usuario").value.trim();
       const erroDiv = document.getElementById("erro-login");
-      if(!email) { alert("fcpalharess@gmail.com"); return; }
+      if(!email) { alert("Por favor, digite seu e-mail."); return; }
       
       erroDiv.style.display = "none";
       document.querySelector("#etapa-email button").innerText = "Enviando...";
@@ -130,7 +133,7 @@
             document.querySelector("#etapa-email button").innerText = "Receber Código";
           }
         }).catch(() => {
-          erroDiv.innerText = "Erro de conexão com o servidor.";
+          erroDiv.innerText = "Erro de conexão com o servidor. Verifique a URL_API.";
           erroDiv.style.display = "block";
           document.querySelector("#etapa-email button").innerText = "Receber Código";
         });
@@ -148,36 +151,37 @@
         .then(r => r.json())
         .then(res => {
           if (res.autenticado) {
-            // Guarda o token no navegador da TV para nunca mais pedir o código de novo nela
             localStorage.setItem("token_cmr", "TOKEN_AUTENTICADO_CMR");
             
-            // Esconde a tela de login e abre o painel
             document.getElementById("tela-autenticacao").style.display = "none";
             document.getElementById("painel-principal").style.display = "block";
             
-            // Inicializa as mídias com os dados que a verificação já retornou
-            midias = res.midias; frases = res.frases;
+            midias = res.midias || []; 
+            frases = res.frases || [];
             if (res.letreiros && res.letreiros.length > 0) {
               document.getElementById('letreiro').innerHTML = res.letreiros.join(' <span class="sep"> ★ </span> ') + ' <span class="sep"> ★ </span> ';
             }
             girarM(); girarF();
             
-            // Ativa a atualização automática a cada 3 minutos
             setInterval(carregarDadosDireto, 180000);
           } else {
             erroDiv.innerText = res.erro || "Código inválido.";
             erroDiv.style.display = "block";
             document.querySelector("#etapa-codigo button").innerText = "Verificar Código";
           }
+        }).catch(() => {
+          erroDiv.innerText = "Erro ao validar código no servidor.";
+          erroDiv.style.display = "block";
+          document.querySelector("#etapa-codigo button").innerText = "Verificar Código";
         });
     }
 
-    // Puxa os dados direto usando o Token salvo localmente
     function carregarDadosDireto() {
       fetch(`${URL_API}?token=TOKEN_AUTENTICADO_CMR`)
         .then(response => response.json())
         .then(res => {
-          midias = res.midias; frases = res.frases;
+          midias = res.midias || []; 
+          frases = res.frases || [];
           if (res.letreiros && res.letreiros.length > 0) {
             document.getElementById('letreiro').innerHTML = res.letreiros.join(' <span class="sep"> ★ </span> ') + ' <span class="sep"> ★ </span> ';
           }
@@ -218,7 +222,7 @@
         if(idDrive) {
           box.innerHTML = `<img src="https://drive.google.com/uc?export=view&id=${idDrive}">`;
         } else {
-          box.innerHTML = `<div style="color:red; font-size:1.5rem;">Link de Imagem Inválido</div>`;
+          box.innerHTML = `<img src="${item.link}">`;
         }
       } else if (item.tipo === "Vídeo") {
         if(idDrive) {
@@ -250,10 +254,8 @@
       timerFrase = setTimeout(girarF, 20000);
     }
 
-    // Inicialização segura
     window.onload = () => {
       verificarLoginExistente();
-      // Se não houver token, o app fica parado na tela de login esperando o fluxo manual
     };
   </script>
 </body>
