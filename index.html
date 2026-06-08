@@ -4,35 +4,56 @@
   <meta charset="UTF-8">
   <title>Painel Digital CMR</title>
   <style>
-    :root { --verde: #006837; --amarelo: #fff200; --preto: #000; --branco: #fff; }
+    :root { 
+      --verde: #006837; 
+      --amarelo: #fff200; 
+      --preto: #000; 
+      --branco: #fff; 
+      --azul-escuro: #002333;
+    }
     body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: var(--preto); font-family: 'Segoe UI', sans-serif; }
     
-    /* Layout do Painel (Fica escondido até autenticar) */
+    /* Layout Principal Corporativo */
     #painel-principal { display: none; }
     .main-layout { display: flex; width: 100vw; height: calc(100vh - 65px); }
-    .midia-area { flex: 3; position: relative; border: 6px solid var(--amarelo); box-sizing: border-box; background: #050505; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-
+    
+    /* Área de Mídia (Esquerda) */
+    .midia-area { flex: 3; position: relative; border-right: 5px solid var(--amarelo); box-sizing: border-box; background: #050505; display: flex; justify-content: center; align-items: center; overflow: hidden; }
     .fade-in { animation: fadeInEffect 1.2s ease-in-out; }
-    @keyframes fadeInEffect { from { opacity: 0; transform: scale(1.03); } to { opacity: 1; transform: scale(1); } }
-
+    @keyframes fadeInEffect { from { opacity: 0; } to { opacity: 1; } }
     #display-conteudo { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-    img, iframe { width: 100%; height: 100%; object-fit: contain; border: none; }
+    img, iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
+    
     #legenda-sobreposta { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 104, 55, 0.9); color: var(--amarelo); padding: 15px 0; text-align: center; font-size: 2.2rem; font-weight: 900; text-transform: uppercase; z-index: 10; display: none; }
     
-    .sidebar { flex: 1; background: var(--verde); display: flex; flex-direction: column; align-items: center; padding: 20px; border-left: 2px solid var(--amarelo); color: var(--branco); box-sizing: border-box; }
-    .logo { width: 85%; margin-bottom: 30px; }
-    #relogio { font-size: 4.5rem; font-weight: 900; color: var(--amarelo); margin: 0; }
-    #data { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
-    .frase-box { width: 100%; text-align: center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 25px; margin-top: 20px; }
-    #texto-frase { font-size: 1.6rem; font-style: italic; font-weight: 700; line-height: 1.3; }
-    .card-aviso-tv { background: #00334d; border: 5px solid var(--amarelo); border-radius: 15px; padding: 40px; max-width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    /* Barra Lateral Direita (Visual Versão 50) */
+    .sidebar { flex: 1.1; background: var(--azul-escuro); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 25px 20px; color: var(--branco); box-sizing: border-box; position: relative; }
+    
+    /* Logotipo Redondo no Topo */
+    .logo-container { width: 220px; height: 220px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); margin-bottom: 40px; border: 4px solid var(--verde); overflow: hidden; }
+    .logo-container img { width: 85%; height: 85%; object-fit: contain; }
+    
+    /* Moldura Amarela do Relógio */
+    .relogio-box { width: 90%; border: 3px solid var(--amarelo); border-radius: 18px; padding: 20px 10px; text-align: center; background: rgba(0,0,0,0.2); margin-bottom: 30px; }
+    #relogio { font-size: 5rem; font-weight: 900; color: var(--amarelo); margin: 0; line-height: 1; font-family: monospace; }
+    #data { font-size: 1.3rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-top: 10px; color: var(--branco); }
+    
+    /* Caixa da Frase do Dia */
+    .frase-box { width: 95%; text-align: center; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 25px; }
+    .frase-titulo { color: var(--amarelo); font-size: 1rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; }
+    #texto-frase { font-size: 1.7rem; font-style: italic; font-weight: 600; line-height: 1.4; color: var(--branco); padding: 0 10px; }
+    
+    /* Avisos em formato de Card de TV */
+    .card-aviso-tv { background: var(--verde); border: 5px solid var(--amarelo); border-radius: 15px; padding: 40px; max-width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .texto-aviso-tv { font-size: 3.2rem; font-weight: bold; color: white; line-height: 1.4; }
-    .footer { position: fixed; bottom: 0; width: 100%; background: var(--preto); height: 65px; display: flex; align-items: center; border-top: 4px solid var(--amarelo); z-index: 100; }
-    .marquee { white-space: nowrap; font-size: 2rem; font-weight: bold; color: var(--amarelo); animation: scroll 25s linear infinite; padding-left: 100vw; }
+    
+    /* Rodapé do Letreiro Dinâmico */
+    .footer { position: fixed; bottom: 0; width: 100%; background: var(--preto); height: 65px; display: flex; align-items: center; border-top: 3px solid var(--amarelo); z-index: 100; overflow: hidden; }
+    .marquee { white-space: nowrap; font-size: 2.3rem; font-weight: bold; color: var(--amarelo); animation: scroll 30s linear infinite; padding-left: 100vw; display: flex; align-items: center; }
     @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-    .sep { margin: 0 40px; color: var(--branco); }
+    .sep { margin: 0 30px; color: var(--branco); font-size: 1.8rem; }
 
-    /* Tela de Bloqueio / Login */
+    /* Tela de Autenticação */
     #tela-autenticacao { position: fixed; top:0; left:0; width:100vw; height:100vh; background:#111; display:flex; justify-content:center; align-items:center; z-index:9999; }
     .login-box { background: #fff; color:#333; padding: 40px; border-radius: 15px; width: 380px; text-align: center; border-top: 8px solid var(--verde); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
     .login-box h2 { margin-top: 0; color: var(--verde); }
@@ -46,11 +67,11 @@
 
   <div id="tela-autenticacao">
     <div class="login-box">
-      <div style="background: var(--verde); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-        <span style="color: var(--amarelo); font-size: 1.8rem; font-weight: bold; letter-spacing: 2px;">PAINEL DIGITAL</span>
+      <div style="background: var(--verde); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+        <span style="color: var(--amarelo); font-size: 1.8rem; font-weight: bold; letter-spacing: 2px;">CMR BRASIL</span>
       </div>
       <h2>Acesso Restrito</h2>
-      <p style="font-size:0.9rem; color:#666;">Insira seu e-mail para receber o código de acesso.</p>
+      <p style="font-size:0.9rem; color:#666;">Insira seu e-mail institucional para receber o código de acesso.</p>
       
       <div id="etapa-email">
         <input type="email" id="email-usuario" placeholder="fcpalharess@gmail.com">
@@ -68,27 +89,37 @@
 
   <div id="painel-principal">
     <div class="main-layout">
+      
       <div class="midia-area">
         <div id="display-conteudo">Carregando mídias...</div>
         <div id="legenda-sobreposta"></div>
       </div>
+      
       <div class="sidebar">
-        <div style="background: var(--branco); padding: 10px; border-radius: 8px; margin-bottom: 30px; width: 85%; text-align: center; border: 2px solid var(--amarelo);">
-          <span style="color: var(--verde); font-size: 2rem; font-weight: bold; letter-spacing: 1px;">CMR</span>
+        <div class="logo-container">
+          <img src="https://i.postimg.co/N06Xv6f6/cmr-logo-tv.png" alt="CMR Brasil" onerror="this.src='https://images2.imgbox.com/7b/4b/LwM7fC9W_o.png'">
         </div>
-        <div id="relogio">00:00:00</div>
-        <div id="data">...</div>
+        
+        <div class="relogio-box">
+          <div id="relogio">00:00:00</div>
+          <div id="data">...</div>
+        </div>
+        
         <div class="frase-box">
-          <span style="color: var(--amarelo); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">FRASE DO DIA</span>
+          <div class="frase-titulo">Frase do Dia</div>
           <div id="texto-frase">Carregando...</div>
         </div>
       </div>
+
     </div>
-    <div class="footer"><div class="marquee" id="letreiro">Carregando letreiro...</div></div>
+    
+    <div class="footer">
+      <div class="marquee" id="letreiro">Carregando informações relevantes...</div>
+    </div>
   </div>
 
   <script>
-    // ⚠️ COLOQUE AQUI A SUA URL DO GOOGLE APPS SCRIPT (TERMINADA EM /exec)
+    // Link direto da sua implantação Versão 50
     const URL_API = "https://script.google.com/macros/s/AKfycbwpyazuYeiNB9rJo8Mj8Z-p-XonMgRPh3Nhi-I7b6RTYY-D4dw6X7ZPgUYtqdw9AWeB5Q/exec";
 
     let midias = [], frases = [], idxM = 0, idxF = 0;
@@ -99,7 +130,8 @@
       const agora = new Date();
       document.getElementById('relogio').innerText = agora.toLocaleTimeString('pt-BR');
       const opt = { weekday: 'long', day: 'numeric', month: 'short' };
-      document.getElementById('data').innerText = agora.toLocaleDateString('pt-BR', opt).toUpperCase();
+      let dataTexto = agora.toLocaleDateString('pt-BR', opt).toUpperCase();
+      document.getElementById('data').innerText = dataTexto.replace(".", "");
     }
     setInterval(atualizarRelogio, 1000);
 
@@ -234,7 +266,7 @@
       } else {
         box.innerHTML = `
           <div class="card-aviso-tv">
-            <div style="font-size: 1.5rem; color: var(--amarelo); text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--amarelo); padding-bottom: 5px;">${item.titulo || 'Aviso Interno'}</div>
+            <div style="font-size: 1.6rem; color: var(--amarelo); text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--amarelo); padding-bottom: 5px; font-weight:bold;">${item.titulo || 'Comunicado Oficial'}</div>
             <div class="texto-aviso-tv">${item.link}</div>
           </div>
         `;
@@ -251,7 +283,7 @@
 
       document.getElementById('texto-frase').innerText = `"${frases[idxF]}"`;
       idxF = (idxF + 1) % frases.length;
-      timerFrase = setTimeout(girarF, 20000);
+      timerFrase = setTimeout(girarF, 25000);
     }
 
     window.onload = () => {
