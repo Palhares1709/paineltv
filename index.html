@@ -13,7 +13,7 @@
     }
     body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: var(--preto); font-family: 'Segoe UI', sans-serif; }
     
-    /* Layout Principal Corporativo */
+    /* Layout Principal Corporativo (Versão 50) */
     #painel-principal { display: none; }
     .main-layout { display: flex; width: 100vw; height: calc(100vh - 65px); }
     
@@ -26,7 +26,7 @@
     
     #legenda-sobreposta { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 104, 55, 0.9); color: var(--amarelo); padding: 15px 0; text-align: center; font-size: 2.2rem; font-weight: 900; text-transform: uppercase; z-index: 10; display: none; }
     
-    /* Barra Lateral Direita (Visual Versão 50) */
+    /* Barra Lateral Direita (Relógio e Frase) */
     .sidebar { flex: 1.1; background: var(--azul-escuro); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 25px 20px; color: var(--branco); box-sizing: border-box; position: relative; }
     
     /* Logotipo Redondo no Topo */
@@ -53,7 +53,7 @@
     @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     .sep { margin: 0 30px; color: var(--branco); font-size: 1.8rem; }
 
-    /* Tela de Autenticação */
+    /* Tela de Autenticação Centralizada */
     #tela-autenticacao { position: fixed; top:0; left:0; width:100vw; height:100vh; background:#111; display:flex; justify-content:center; align-items:center; z-index:9999; }
     .login-box { background: #fff; color:#333; padding: 40px; border-radius: 15px; width: 380px; text-align: center; border-top: 8px solid var(--verde); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
     .login-box h2 { margin-top: 0; color: var(--verde); }
@@ -68,10 +68,10 @@
   <div id="tela-autenticacao">
     <div class="login-box">
       <div style="background: var(--verde); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-        <span style="color: var(--amarelo); font-size: 1.8rem; font-weight: bold; letter-spacing: 2px;">CMR BRASIL</span>
+        <span style="color: var(--amarelo); font-size: 1.8rem; font-weight: bold; letter-spacing: 2px;">PAINEL DIGITAL</span>
       </div>
       <h2>Acesso Restrito</h2>
-      <p style="font-size:0.9rem; color:#666;">Insira seu e-mail institucional para receber o código de acesso.</p>
+      <p style="font-size:0.9rem; color:#666;">Insira seu e-mail para receber o código de acesso.</p>
       
       <div id="etapa-email">
         <input type="email" id="email-usuario" placeholder="fcpalharess@gmail.com">
@@ -119,8 +119,8 @@
   </div>
 
   <script>
-    // Link direto da sua implantação Versão 50
-    const URL_API = "https://script.google.com/macros/s/AKfycbyuFkv9tyEwU2pxHBuJ2t5FA6EiskBmzQnrtcHxuPVQRX3v_lBmuwfcQA0zEHpSDvf_pQ/exec";
+    // Link direto e validado da sua implantação Versão 50
+    const URL_API = "https://script.google.com/macros/s/AKfycbwpyazuYeiNB9rJo8Mj8Z-p-XonMgRPh3Nhi-I7b6RTYY-D4dw6X7ZPgUYtqdw9AWeB5Q/exec";
 
     let midias = [], frases = [], idxM = 0, idxF = 0;
     let timerMidia = null, timerFrase = null;
@@ -144,6 +144,7 @@
       }
     }
 
+    // Função corrigida buscando o id correto "email-usuario"
     function pedirCodigo() {
       const email = document.getElementById("email-usuario").value.trim();
       const erroDiv = document.getElementById("erro-login");
