@@ -15,7 +15,9 @@
     
     /* Layout Principal Corporativo (Versão 50) */
     #painel-principal { display: none; }
-    .main-layout { display: flex; width: 100vw; height: calc(100vh - 65px); }
+    
+    /* Altura ajustada para descontar os 45px do novo rodapé */
+    .main-layout { display: flex; width: 100vw; height: calc(100vh - 45px); }
     
     /* Área de Mídia (Esquerda) */
     .midia-area { flex: 3; position: relative; border-right: 5px solid var(--amarelo); box-sizing: border-box; background: #050505; display: flex; justify-content: center; align-items: center; overflow: hidden; }
@@ -29,9 +31,36 @@
     /* Barra Lateral Direita (Relógio e Frase) */
     .sidebar { flex: 1.1; background: var(--azul-escuro); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 25px 20px; color: var(--branco); box-sizing: border-box; position: relative; }
     
-    /* Logotipo Redondo no Topo */
-    .logo-container { width: 220px; height: 220px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); margin-bottom: 40px; border: 4px solid var(--verde); overflow: hidden; }
-    .logo-container img { width: 85%; height: 85%; object-fit: contain; }
+    /* Logotipo Redondo no Topo com Efeito Giratório 3D */
+    .logo-container { 
+      width: 220px; 
+      height: 220px; 
+      background: white; 
+      border-radius: 50%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4); 
+      margin-bottom: 40px; 
+      border: 4px solid var(--verde); 
+      overflow: hidden; 
+      perspective: 1000px; /* Cria profundidade 3D */
+    }
+    
+    .logo-container img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; /* Preenche o círculo perfeitamente */
+      border-radius: 50%;
+      animation: girarFrenteVerso 8s linear infinite; /* Rotação contínua */
+      transform-style: preserve-3d;
+    }
+
+    /* Animação que faz girar em torno do eixo Y */
+    @keyframes girarFrenteVerso {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
     
     /* Moldura Amarela do Relógio */
     .relogio-box { width: 90%; border: 3px solid var(--amarelo); border-radius: 18px; padding: 20px 10px; text-align: center; background: rgba(0,0,0,0.2); margin-bottom: 30px; }
@@ -47,13 +76,35 @@
     .card-aviso-tv { background: var(--verde); border: 5px solid var(--amarelo); border-radius: 15px; padding: 40px; max-width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .texto-aviso-tv { font-size: 3.2rem; font-weight: bold; color: white; line-height: 1.4; }
     
-    /* Rodapé do Letreiro Dinâmico */
-    .footer { position: fixed; bottom: 0; width: 100%; background: var(--preto); height: 65px; display: flex; align-items: center; border-top: 3px solid var(--amarelo); z-index: 100; overflow: hidden; }
-    .marquee { white-space: nowrap; font-size: 2.3rem; font-weight: bold; color: var(--amarelo); animation: scroll 30s linear infinite; padding-left: 100vw; display: flex; align-items: center; }
+    /* Rodapé Baixado para 45px de altura */
+    .footer { 
+      position: fixed; 
+      bottom: 0; 
+      width: 100%; 
+      background: var(--preto); 
+      height: 45px; 
+      display: flex; 
+      align-items: center; 
+      border-top: 3px solid var(--amarelo); 
+      z-index: 100; 
+      overflow: hidden; 
+    }
+    
+    /* Fonte ajustada para 1.8rem para caber perfeitamente na barra de 45px */
+    .marquee { 
+      white-space: nowrap; 
+      font-size: 1.8rem; 
+      font-weight: bold; 
+      color: var(--amarelo); 
+      animation: scroll 25s linear infinite; 
+      padding-left: 100vw; 
+      display: flex; 
+      align-items: center; 
+    }
     @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     .sep { margin: 0 30px; color: var(--branco); font-size: 1.8rem; }
 
-    /* Tela de Autenticação Centralizada */
+    /* Tela de Autenticação */
     #tela-autenticacao { position: fixed; top:0; left:0; width:100vw; height:100vh; background:#111; display:flex; justify-content:center; align-items:center; z-index:9999; }
     .login-box { background: #fff; color:#333; padding: 40px; border-radius: 15px; width: 380px; text-align: center; border-top: 8px solid var(--verde); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
     .login-box h2 { margin-top: 0; color: var(--verde); }
@@ -97,7 +148,7 @@
       
       <div class="sidebar">
         <div class="logo-container">
-          <img src="https://i.postimg.co/N06Xv6f6/cmr-logo-tv.png" alt="CMR Brasil" onerror="this.src='https://images2.imgbox.com/7b/4b/LwM7fC9W_o.png'">
+          <img src="CMR alta.JPG" alt="CMR Brasil">
         </div>
         
         <div class="relogio-box">
@@ -120,7 +171,7 @@
 
   <script>
     // Link direto e validado da sua implantação Versão 50
-    const URL_API = "https://script.google.com/macros/s/AKfycbyuFkv9tyEwU2pxHBuJ2t5FA6EiskBmzQnrtcHxuPVQRX3v_lBmuwfcQA0zEHpSDvf_pQ/exec";
+    const URL_API = "https://script.google.com/macros/s/AKfycbwpyazuYeiNB9rJo8Mj8Z-p-XonMgRPh3Nhi-I7b6RTYY-D4dw6X7ZPgUYtqdw9AWeB5Q/exec";
 
     let midias = [], frases = [], idxM = 0, idxF = 0;
     let timerMidia = null, timerFrase = null;
@@ -144,7 +195,6 @@
       }
     }
 
-    // Função corrigida buscando o id correto "email-usuario"
     function pedirCodigo() {
       const email = document.getElementById("email-usuario").value.trim();
       const erroDiv = document.getElementById("erro-login");
@@ -196,7 +246,8 @@
             }
             girarM(); girarF();
             
-            setInterval(carregarDadosDireto, 3000);
+            // Alterado para 30000 (30 segundos) para buscar novos dados na planilha bem mais rápido!
+            setInterval(carregarDadosDireto, 30000);
           } else {
             erroDiv.innerText = res.erro || "Código inválido.";
             erroDiv.style.display = "block";
