@@ -85,7 +85,7 @@
 
   <script>
     // ⚠️ SUBSTITUA COM A SUA URL DO GOOGLE APPS SCRIPT ATUALIZADA
-    const URL_API = "COLE_AQUI_A_SUA_URL_DO_APP_DA_WEB";
+    const URL_API = "https://script.google.com/macros/s/AKfycbwpyazuYeiNB9rJo8Mj8Z-p-XonMgRPh3Nhi-I7b6RTYY-D4dw6X7ZPgUYtqdw9AWeB5Q/exec";
 
     let midias = [], frases = [], idxM = 0, idxF = 0;
     let timerMidia = null, timerFrase = null;
