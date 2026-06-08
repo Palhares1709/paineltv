@@ -7,59 +7,89 @@
     :root { --verde: #006837; --amarelo: #fff200; --preto: #000; --branco: #fff; }
     body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: var(--preto); font-family: 'Segoe UI', sans-serif; }
     
+    /* Layout do Painel (Fica escondido até autenticar) */
+    #painel-principal { display: none; }
     .main-layout { display: flex; width: 100vw; height: calc(100vh - 65px); }
     .midia-area { flex: 3; position: relative; border: 6px solid var(--amarelo); box-sizing: border-box; background: #050505; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
     .fade-in { animation: fadeInEffect 1.2s ease-in-out; }
-    @keyframes fadeInEffect {
-      from { opacity: 0; transform: scale(1.03); }
-      to { opacity: 1; transform: scale(1); }
-    }
+    @keyframes fadeInEffect { from { opacity: 0; transform: scale(1.03); } to { opacity: 1; transform: scale(1); } }
 
     #display-conteudo { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
     img, iframe { width: 100%; height: 100%; object-fit: contain; border: none; }
-
     #legenda-sobreposta { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0, 104, 55, 0.9); color: var(--amarelo); padding: 15px 0; text-align: center; font-size: 2.2rem; font-weight: 900; text-transform: uppercase; z-index: 10; display: none; }
+    
     .sidebar { flex: 1; background: var(--verde); display: flex; flex-direction: column; align-items: center; padding: 20px; border-left: 2px solid var(--amarelo); color: var(--branco); box-sizing: border-box; }
     .logo { width: 85%; margin-bottom: 30px; }
     #relogio { font-size: 4.5rem; font-weight: 900; color: var(--amarelo); margin: 0; }
     #data { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
     .frase-box { width: 100%; text-align: center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 25px; margin-top: 20px; }
     #texto-frase { font-size: 1.6rem; font-style: italic; font-weight: 700; line-height: 1.3; }
-
     .card-aviso-tv { background: #00334d; border: 5px solid var(--amarelo); border-radius: 15px; padding: 40px; max-width: 85%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .texto-aviso-tv { font-size: 3.2rem; font-weight: bold; color: white; line-height: 1.4; }
-
     .footer { position: fixed; bottom: 0; width: 100%; background: var(--preto); height: 65px; display: flex; align-items: center; border-top: 4px solid var(--amarelo); z-index: 100; }
     .marquee { white-space: nowrap; font-size: 2rem; font-weight: bold; color: var(--amarelo); animation: scroll 25s linear infinite; padding-left: 100vw; }
     @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     .sep { margin: 0 40px; color: var(--branco); }
+
+    /* Tela de Bloqueio / Login */
+    #tela-autenticacao { position: fixed; top:0; left:0; width:100vw; height:100vh; background:#111; display:flex; justify-content:center; align-items:center; z-index:9999; }
+    .login-box { background: #fff; color:#333; padding: 40px; border-radius: 15px; width: 380px; text-align: center; border-top: 8px solid var(--verde); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+    .login-box h2 { margin-top: 0; color: var(--verde); }
+    .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1.1rem; text-align: center; }
+    .login-box button { width: 100%; padding: 14px; background: var(--verde); color: white; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer; text-transform:uppercase; }
+    .login-box button:hover { background: #004d29; }
+    .msg-erro { color: red; font-size: 0.9rem; margin-top: 10px; display: none; }
   </style>
 </head>
 <body>
-  <div class="main-layout">
-    <div class="midia-area">
-      <div id="display-conteudo">Carregando painel...</div>
-      <div id="legenda-sobreposta"></div>
-    </div>
-    <div class="sidebar">
-      <img src="https://i.postimg.cc/85zXp9mX/logo-cmr.png" class="logo">
-      <div id="relogio">00:00:00</div>
-      <div id="data">...</div>
-      <div class="frase-box">
-        <span style="color: var(--amarelo); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">FRASE DO DIA</span>
-        <div id="texto-frase">Carregando...</div>
+
+  <div id="tela-autenticacao">
+    <div class="login-box">
+      <img src="https://i.postimg.cc/85zXp9mX/logo-cmr.png" style="width: 60%; margin-bottom: 15px;">
+      <h2>Acesso Restrito</h2>
+      <p style="font-size:0.9rem; color:#666;">Insira seu e-mail institucional para receber o código de acesso.</p>
+      
+      <div id="etapa-email">
+        <input type="email" id="email-usuario" placeholder="seu-email@empresa.com">
+        <button onclick="pedirCodigo()">Receber Código</button>
       </div>
+
+      <div id="etapa-codigo" style="display: none;">
+        <input type="text" id="codigo-otp" placeholder="Digite os 6 dígitos" maxlength="6">
+        <button onclick="validarCodigo()">Verificar Código</button>
+      </div>
+      
+      <div id="erro-login" class="msg-erro"></div>
     </div>
   </div>
-  <div class="footer"><div class="marquee" id="letreiro">Carregando letreiro...</div></div>
+
+  <div id="painel-principal">
+    <div class="main-layout">
+      <div class="midia-area">
+        <div id="display-conteudo">Carregando mídias...</div>
+        <div id="legenda-sobreposta"></div>
+      </div>
+      <div class="sidebar">
+        <img src="https://i.postimg.cc/85zXp9mX/logo-cmr.png" class="logo">
+        <div id="relogio">00:00:00</div>
+        <div id="data">...</div>
+        <div class="frase-box">
+          <span style="color: var(--amarelo); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">FRASE DO DIA</span>
+          <div id="texto-frase">Carregando...</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><div class="marquee" id="letreiro">Carregando letreiro...</div></div>
+  </div>
 
   <script>
-    // ⚠️ SUBSTITUA COM A SUA URL DO GOOGLE APPS SCRIPT GERADA NO PASSO 1
+    // ⚠️ SUBSTITUA COM A SUA URL DO GOOGLE APPS SCRIPT ATUALIZADA
     const URL_API = "COLE_AQUI_A_SUA_URL_DO_APP_DA_WEB";
 
     let midias = [], frases = [], idxM = 0, idxF = 0;
     let timerMidia = null, timerFrase = null;
+    let emailGuardado = "";
 
     function atualizarRelogio() {
       const agora = new Date();
@@ -69,22 +99,91 @@
     }
     setInterval(atualizarRelogio, 1000);
 
-    // Nova função de carregamento via API externa
-    function carregar() {
-      fetch(URL_API)
+    // Verifica se o navegador já fez login antes para pular a tela de bloqueio
+    function verificarLoginExistente() {
+      const token = localStorage.getItem("token_cmr");
+      if (token === "TOKEN_AUTENTICADO_CMR") {
+        document.getElementById("tela-autenticacao").style.display = "none";
+        document.getElementById("painel-principal").style.display = "block";
+        carregarDadosDireto();
+      }
+    }
+
+    function pedirCodigo() {
+      const email = document.getElementById("email-usuario").value.trim();
+      const erroDiv = document.getElementById("erro-login");
+      if(!email) { alert("Digite seu e-mail."); return; }
+      
+      erroDiv.style.display = "none";
+      document.querySelector("#etapa-email button").innerText = "Enviando...";
+
+      fetch(`${URL_API}?acao=solicitarCodigo&email=${encodeURIComponent(email)}`)
+        .then(r => r.json())
+        .then(res => {
+          if(res.sucesso) {
+            emailGuardado = email;
+            document.getElementById("etapa-email").style.display = "none";
+            document.getElementById("etapa-codigo").style.display = "block";
+          } else {
+            erroDiv.innerText = res.erro || "Erro ao processar.";
+            erroDiv.style.display = "block";
+            document.querySelector("#etapa-email button").innerText = "Receber Código";
+          }
+        }).catch(() => {
+          erroDiv.innerText = "Erro de conexão com o servidor.";
+          erroDiv.style.display = "block";
+          document.querySelector("#etapa-email button").innerText = "Receber Código";
+        });
+    }
+
+    function validarCodigo() {
+      const codigo = document.getElementById("codigo-otp").value.trim();
+      const erroDiv = document.getElementById("erro-login");
+      if(!codigo) { alert("Digite o código recebido."); return; }
+
+      erroDiv.style.display = "none";
+      document.querySelector("#etapa-codigo button").innerText = "Verificando...";
+
+      fetch(`${URL_API}?acao=verificarCodigo&email=${encodeURIComponent(emailGuardado)}&codigo=${codigo}`)
+        .then(r => r.json())
+        .then(res => {
+          if (res.autenticado) {
+            // Guarda o token no navegador da TV para nunca mais pedir o código de novo nela
+            localStorage.setItem("token_cmr", "TOKEN_AUTENTICADO_CMR");
+            
+            // Esconde a tela de login e abre o painel
+            document.getElementById("tela-autenticacao").style.display = "none";
+            document.getElementById("painel-principal").style.display = "block";
+            
+            // Inicializa as mídias com os dados que a verificação já retornou
+            midias = res.midias; frases = res.frases;
+            if (res.letreiros && res.letreiros.length > 0) {
+              document.getElementById('letreiro').innerHTML = res.letreiros.join(' <span class="sep"> ★ </span> ') + ' <span class="sep"> ★ </span> ';
+            }
+            girarM(); girarF();
+            
+            // Ativa a atualização automática a cada 3 minutos
+            setInterval(carregarDadosDireto, 180000);
+          } else {
+            erroDiv.innerText = res.erro || "Código inválido.";
+            erroDiv.style.display = "block";
+            document.querySelector("#etapa-codigo button").innerText = "Verificar Código";
+          }
+        });
+    }
+
+    // Puxa os dados direto usando o Token salvo localmente
+    function carregarDadosDireto() {
+      fetch(`${URL_API}?token=TOKEN_AUTENTICADO_CMR`)
         .then(response => response.json())
         .then(res => {
-          midias = res.midias; 
-          frases = res.frases;
-          
+          midias = res.midias; frases = res.frases;
           if (res.letreiros && res.letreiros.length > 0) {
             document.getElementById('letreiro').innerHTML = res.letreiros.join(' <span class="sep"> ★ </span> ') + ' <span class="sep"> ★ </span> ';
           }
-          
           if(!timerMidia && midias.length > 0) girarM();
           if(!timerFrase && frases.length > 0) girarF();
-        })
-        .catch(err => console.error("Erro ao buscar dados da planilha: ", err));
+        });
     }
 
     function extrairIdDrive(url) {
@@ -151,8 +250,11 @@
       timerFrase = setTimeout(girarF, 20000);
     }
 
-    setInterval(carregar, 180000);
-    window.onload = carregar;
+    // Inicialização segura
+    window.onload = () => {
+      verificarLoginExistente();
+      // Se não houver token, o app fica parado na tela de login esperando o fluxo manual
+    };
   </script>
 </body>
 </html>
